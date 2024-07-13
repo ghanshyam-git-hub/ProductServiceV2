@@ -1,0 +1,20 @@
+package dev.ghanshyam.productservicev2.service;
+
+import dev.ghanshyam.productservicev2.dtos.AddProductDto;
+import dev.ghanshyam.productservicev2.dtos.ProductDto;
+import dev.ghanshyam.productservicev2.dtos.UpdateProductDto;
+import dev.ghanshyam.productservicev2.exception.AddException;
+import dev.ghanshyam.productservicev2.exception.DeleteException;
+import dev.ghanshyam.productservicev2.exception.NotFoundException;
+
+import java.util.List;
+
+public interface ProductsService {
+    public ProductDto getProductsById(Long id) throws NotFoundException;
+    public List<ProductDto> getAllProducts() throws NotFoundException;
+    public List<String> getAllCategories() throws NotFoundException;
+    public List<ProductDto> getProductsInCategory(String category) throws NotFoundException;
+    public ProductDto addProduct(AddProductDto addProductDto) throws AddException;
+    public ProductDto updateProduct(Long id ,UpdateProductDto updateProductDto) throws NotFoundException;
+    public ProductDto deleteProduct(Long id) throws DeleteException;
+}
