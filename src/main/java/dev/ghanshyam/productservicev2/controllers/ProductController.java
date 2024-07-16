@@ -63,6 +63,16 @@ public class ProductController {
         return responseEntity;
     }
 
+    /*
+    /category/search?cat_name="xyz"
+     */
+    @GetMapping("/category/search")
+    public ResponseEntity<List<ProductDto>> getProductsInCategoriesLike(@RequestParam("cat_name") String category) throws NotFoundException {
+        List<ProductDto>productDtoList = productsService.getProductsInCategoriesLike(category);
+        ResponseEntity<List<ProductDto>> responseEntity = new ResponseEntity<>(productDtoList,HttpStatus.OK);
+        return responseEntity;
+    }
+
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@RequestBody AddProductDto addProductDto) throws AddException{
         ProductDto addedProductDto = productsService.addProduct(addProductDto);

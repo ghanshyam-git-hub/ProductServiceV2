@@ -57,6 +57,15 @@ public class RealStoreService implements ProductsService{
         return productDtoList;
     }
 
+    public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
+        List<Category> categoryList = categoryServiceRepo.getCategoriesLike(searchstring);
+        if(categoryList.size()==0) throw new NotFoundException("No such Category");
+        List<Product> productList = productServiceRepo.getAllByCategoryIn(categoryList);
+        List<ProductDto> productDtoList = productList.stream().map((product)->convertProductToProductDto(product)).toList();
+        return productDtoList;
+    }
+
+
     @Override
     public ProductDto addProduct(AddProductDto addProductDto) throws AddException {
         Product product = new Product();

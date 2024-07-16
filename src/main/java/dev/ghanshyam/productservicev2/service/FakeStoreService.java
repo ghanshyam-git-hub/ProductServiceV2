@@ -101,4 +101,9 @@ public class FakeStoreService implements ProductsService{
         if(deletedProduct==null) throw new DeleteException("This product does not exist, so cant be deleted");
         return deletedProduct;
     }
+
+    @Override
+    public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
+        return null;
+    }
 }

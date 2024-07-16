@@ -17,4 +17,5 @@ public interface ProductsService {
     public ProductDto addProduct(AddProductDto addProductDto) throws AddException;
     public ProductDto updateProduct(Long id ,UpdateProductDto updateProductDto) throws NotFoundException;
     public ProductDto deleteProduct(Long id) throws DeleteException;
+    public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException;
 }

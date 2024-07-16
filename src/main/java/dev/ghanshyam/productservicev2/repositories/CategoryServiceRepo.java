@@ -11,6 +11,9 @@ public interface CategoryServiceRepo extends JpaRepository<Category, UUID> {
     @Query("select c from Category c")
     List<Category> getAllCategories();
 
+    @Query("select c from Category c where c.category LIKE %:searchstring%")
+    List<Category> getCategoriesLike(String searchstring);
+
     @Query("select c from Category c where c.category=:cat_name")
     Category getCategoryObjectByName(String cat_name);
 
