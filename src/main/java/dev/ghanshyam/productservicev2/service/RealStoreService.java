@@ -46,7 +46,18 @@ public class RealStoreService implements ProductsService{
     public List<String> getAllCategories() throws NotFoundException {
         List<Category> categoryList = categoryServiceRepo.getAllCategories();
         if(categoryList.size()==0)throw new NotFoundException("No Categories added yet");
-        return categoryList.stream().map((category)->category.getCategory()).toList();
+        List<String>stringList = categoryList.stream().map((category)->category.getCategory()).toList();
+        return stringList;
+        // If suppose we return List of Category then internally The List of Products for each category would have to be fetched
+        // This gives N+1 problem. Also we can check in debug, when we fetch the
+        // categorylist becoz of lazy loading only primitives are loaded but List of products is not loaded
+        // thus only 1 db call on category is made. But when at this point we
+        // in debug mode look into variables and start opening the variables then
+        // one by one for each category an internal select statement is executed to fill the corresponding List of products
+        // This is N+1 problem. So for N categories N+1 total db calls will be made becoz of lazy loading.
+        // To prevent this we should smartly understand the need and write queries accordingly.
+        // Like here we only need the categories name , so Instead of returning List<category>
+        // we returned List<String> and thus only 1 db call was sufficient.
     }
 
     @Override
@@ -56,6 +67,22 @@ public class RealStoreService implements ProductsService{
         List<ProductDto> productDtoList = productList.stream().map((product)->convertProductToProductDto(product)).toList();
         return productDtoList;
     }
+
+    public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
+//        List<Category> categoryList = categoryServiceRepo.getCategoriesLike(searchstring);
+//        if(categoryList.size()==0) throw new NotFoundException("No such Category");
+//        List<Product> productList = productServiceRepo.getProductByCategoryIn(categoryList);
+//        if(productList.size()==0) throw new NotFoundException("No Products in this category yet");
+//        List<ProductDto> productDtoList = productList.stream().map((product)->convertProductToProductDto(product)).toList();
+//        return productDtoList;
+// same result as above is given by the below JPA query
+        List<Category> categoryList = categoryServiceRepo.getCategoriesLike(searchstring);
+        if(categoryList.size()==0) throw new NotFoundException("No such Category");
+        List<Product> productList = productServiceRepo.getAllByCategoryIn(categoryList);
+        List<ProductDto> productDtoList = productList.stream().map((product)->convertProductToProductDto(product)).toList();
+        return productDtoList;
+    }
+
 
     @Override
     public ProductDto addProduct(AddProductDto addProductDto) throws AddException {

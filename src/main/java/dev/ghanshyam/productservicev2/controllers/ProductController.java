@@ -49,6 +49,13 @@ public class ProductController {
         return responseEntity;
     }
 
+//    @GetMapping("/categories")
+//    public ResponseEntity<List<String>> getAllCategories() throws NotFoundException {
+//        List<String> categoryList = productsService.getAllCategories();
+//        ResponseEntity<List<String>> responseEntity = new ResponseEntity<>(categoryList,HttpStatus.OK);
+//        return responseEntity;
+//    }
+
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getAllCategories() throws NotFoundException {
         List<String> categoryList = productsService.getAllCategories();
@@ -59,6 +66,13 @@ public class ProductController {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<ProductDto>> getProductsInCategory(@PathVariable("category") String category) throws NotFoundException {
         List<ProductDto>productDtoList = productsService.getProductsInCategory(category);
+        ResponseEntity<List<ProductDto>> responseEntity = new ResponseEntity<>(productDtoList,HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @GetMapping("/category/search")
+    public ResponseEntity<List<ProductDto>> getProductsInCategoriesLike(@RequestParam("cat_name") String category) throws NotFoundException {
+        List<ProductDto>productDtoList = productsService.getProductsInCategoriesLike(category);
         ResponseEntity<List<ProductDto>> responseEntity = new ResponseEntity<>(productDtoList,HttpStatus.OK);
         return responseEntity;
     }

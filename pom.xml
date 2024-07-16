@@ -83,6 +83,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <systemPropertyVariables>
+                        <WSNSHELL_HOME>conf</WSNSHELL_HOME>
+                    </systemPropertyVariables>
+
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

@@ -57,6 +57,16 @@ public class FakeStoreService implements ProductsService{
         return Arrays.asList(productDtos);
     }
 
+//    @Override
+//    public List<String> getAllCategories() throws NotFoundException {
+//        RestTemplate restTemplate = restTemplateBuilder.build();
+//        String[]categoryStringArray = restTemplate.getForObject(fakestoreapi+products_path+categories_path,String[].class);
+//        List<String> categoryList = Arrays.asList(categoryStringArray);
+//        if(categoryList.size()==0) throw new NotFoundException("No products in any category so far");
+//
+//        return categoryList;
+//    }
+
     @Override
     public List<String> getAllCategories() throws NotFoundException {
         RestTemplate restTemplate = restTemplateBuilder.build();
@@ -100,5 +110,10 @@ public class FakeStoreService implements ProductsService{
         restTemplate.delete(fakestoreapi+products_path+"/"+id);
         if(deletedProduct==null) throw new DeleteException("This product does not exist, so cant be deleted");
         return deletedProduct;
+    }
+
+    @Override
+    public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
+        return null;
     }
 }
