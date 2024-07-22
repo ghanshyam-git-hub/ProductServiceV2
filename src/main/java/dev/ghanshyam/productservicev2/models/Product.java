@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 public class Product extends BaseModel {
-    private Long productId; // when this was product_id - query param was failing - only detecting till product, so changed to this
+    private Long productId;
     private String title;
     private Double price;
 
