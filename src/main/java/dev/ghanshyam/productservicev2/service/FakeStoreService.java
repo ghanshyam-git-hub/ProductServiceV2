@@ -7,9 +7,12 @@ import dev.ghanshyam.productservicev2.exception.AddException;
 import dev.ghanshyam.productservicev2.exception.DeleteException;
 import dev.ghanshyam.productservicev2.exception.NotFoundException;
 import dev.ghanshyam.productservicev2.models.Category;
+import dev.ghanshyam.productservicev2.models.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -104,6 +107,11 @@ public class FakeStoreService implements ProductsService{
 
     @Override
     public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
+        return null;
+    }
+
+    @Override
+    public Page<ProductDto> searchby(Integer page_no, Integer pagesize, String sortdirection, String sortby) {
         return null;
     }
 }

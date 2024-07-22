@@ -11,6 +11,10 @@ import dev.ghanshyam.productservicev2.models.Product;
 import dev.ghanshyam.productservicev2.repositories.CategoryServiceRepo;
 import dev.ghanshyam.productservicev2.repositories.ProductServiceRepo;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -65,6 +69,27 @@ public class RealStoreService implements ProductsService{
         return productDtoList;
     }
 
+    @Override
+    public Page<ProductDto> searchby(Integer page_no, Integer pagesize, String sortdirection, String sortby) {
+        // Pageable object is to be passed in the JPA Query so that it can paginate our search result
+        // But Pageable is an interface we need some implementation class object for this.
+        // PageRequest is a class that implements AbstractPageRequest which inturn extends Pageable. SO it can work.
+        // But PageRequest constructor is protected, means it cant be used outside its children. So the other way of getting the
+        // PageRequest Object is by using the static method of - which is used here
+
+        Sort sort = null;
+        if(sortdirection.equalsIgnoreCase("asc"))
+         sort = Sort.by(Sort.Direction.ASC,sortby);
+        else
+         sort = Sort.by(Sort.Direction.DESC,sortby);
+
+
+        Pageable pageable = PageRequest.of(page_no,pagesize,sort);
+        Page<Product> productPage = productServiceRepo.findAllBy(pageable);
+        Page<ProductDto>productDtoPage = productPage.map((p)-> convertProductToProductDto(p)); // Product should not be send in th o/p else infinite nesting
+        return productDtoPage;
+    }
+
 
     @Override
     public ProductDto addProduct(AddProductDto addProductDto) throws AddException {
@@ -87,7 +112,7 @@ public class RealStoreService implements ProductsService{
             }
         }
 
-        product.setProduct_id(lastProductId+1);
+        product.setProductId(lastProductId+1);
         product.setTitle(addProductDto.getTitle());
         product.setPrice(addProductDto.getPrice());
         product.setDescription(addProductDto.getDescription());
@@ -125,7 +150,7 @@ public class RealStoreService implements ProductsService{
 
     public ProductDto convertProductToProductDto(Product product){
         ProductDto productDto = new ProductDto();
-        productDto.setId(product.getProduct_id());
+        productDto.setId(product.getProductId());
         productDto.setCategory(product.getCategory().getCategory());
         productDto.setTitle(product.getTitle());
         productDto.setPrice(product.getPrice());

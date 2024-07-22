@@ -2,6 +2,9 @@ package dev.ghanshyam.productservicev2.repositories;
 
 import dev.ghanshyam.productservicev2.models.Category;
 import dev.ghanshyam.productservicev2.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,13 +15,13 @@ import java.util.UUID;
 @Repository
 public interface ProductServiceRepo extends JpaRepository<Product, UUID> {
 
-    @Query("select p from Product p where p.product_id=:id")
+    @Query("select p from Product p where p.productId=:id")
     public Product getProductByProduct_id(Long id);
 
     @Query("select p from Product p")
     public List<Product> getAllProducts();
 
-    @Query("select MAX(p.product_id) from Product p")
+    @Query("select MAX(p.productId) from Product p")
     public Long getLastProductId();
 
     @Query("select p from Product p JOIN Category c ON p.category=c where c.category=:cat_name")
@@ -29,4 +32,6 @@ public interface ProductServiceRepo extends JpaRepository<Product, UUID> {
     public Product save(Product p);
 
     public void delete(Product product);
+
+    public Page<Product> findAllBy(Pageable pageable);
 }
