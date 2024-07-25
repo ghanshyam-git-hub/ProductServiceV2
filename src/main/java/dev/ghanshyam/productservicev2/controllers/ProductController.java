@@ -30,11 +30,10 @@ import java.util.MissingFormatArgumentException;
 public class ProductController {
     ProductsService productsService;
 
-    /*
-    ProductController(@Qualifier("FakeStoreProductService") ProductsService productsService){
-        this.productsService = productsService;
-    }
-    */
+//    ProductController(@Qualifier("FakeStoreProductService") ProductsService productsService){
+//        this.productsService = productsService;
+//    }
+
 
     ProductController(@Qualifier("RealStoreProductService") ProductsService productsService){
         this.productsService = productsService;

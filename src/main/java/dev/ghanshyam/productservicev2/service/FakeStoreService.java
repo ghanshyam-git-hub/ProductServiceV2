@@ -8,11 +8,13 @@ import dev.ghanshyam.productservicev2.exception.DeleteException;
 import dev.ghanshyam.productservicev2.exception.NotFoundException;
 import dev.ghanshyam.productservicev2.models.Category;
 import dev.ghanshyam.productservicev2.models.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,6 +27,10 @@ import java.util.MissingFormatArgumentException;
 public class FakeStoreService implements ProductsService{
 
     RestTemplateBuilder restTemplateBuilder;
+
+    @Autowired // we can do in constructor also
+    RedisTemplate redisTemplate;
+
     @Value("${fakestore_api}")
     String fakestoreapi;
 
@@ -37,45 +43,71 @@ public class FakeStoreService implements ProductsService{
     @Value("${category_path}")
     String category_path;
 
-    public FakeStoreService(RestTemplateBuilder restTemplateBuilder) {
+    public FakeStoreService(RestTemplateBuilder restTemplateBuilder, RedisTemplate redisTemplate) {
         this.restTemplateBuilder = new RestTemplateBuilder();
     }
 
     @Override
     public ProductDto getProductsById(Long id) throws NotFoundException {
+        //Redis Check
+        ProductDto cachedProductDto = (ProductDto) redisTemplate.opsForHash().get("Product","PRODUCT_"+id);
+        if(cachedProductDto!=null) return cachedProductDto;
+
         RestTemplate restTemplate = restTemplateBuilder.build();
         ProductDto productDto = restTemplate.getForObject(fakestoreapi+products_path+"/"+id , ProductDto.class);
 
         if(productDto==null) throw new NotFoundException("Requested Product does not exists");
 
+        //Redis entry
+        redisTemplate.opsForHash().put("Product","PRODUCT_"+id,productDto);
         return productDto;
     }
 
     @Override
     public List<ProductDto> getAllProducts() throws NotFoundException {
+        //Redis check
+        List<ProductDto> cachedAllProductsList = (List<ProductDto>) redisTemplate.opsForHash().get("Product","ALL_PRODUCTS");
+        if(cachedAllProductsList!=null) return cachedAllProductsList;
+
         RestTemplate restTemplate = restTemplateBuilder.build();
         ProductDto[]productDtos = restTemplate.getForObject(fakestoreapi+products_path,ProductDto[].class);
         List<ProductDto> listProductDtos = Arrays.asList(productDtos);
+
         if(listProductDtos.size()==0) throw new NotFoundException("No Product available yet, will add soon!");
+
+        //Redis entry
+        redisTemplate.opsForHash().put("Product","ALL_PRODUCTS",listProductDtos);
         return Arrays.asList(productDtos);
     }
 
     @Override
     public List<String> getAllCategories() throws NotFoundException {
+        //Redis check
+        List<String> cachedCategoriesList = ( List<String>)redisTemplate.opsForHash().get("Category","ALL_CATEGORIES");
+        if(cachedCategoriesList!=null) return cachedCategoriesList;
+
         RestTemplate restTemplate = restTemplateBuilder.build();
         String[]categoryStringArray = restTemplate.getForObject(fakestoreapi+products_path+categories_path,String[].class);
         List<String> categoryList = Arrays.asList(categoryStringArray);
         if(categoryList.size()==0) throw new NotFoundException("No products in any category so far");
 
+        // Redis entry
+        redisTemplate.opsForHash().put("Category","ALL_CATEGORIES",categoryList);
         return categoryList;
     }
 
     @Override
     public List<ProductDto> getProductsInCategory(String category) throws NotFoundException {
+        //redis check
+        List<ProductDto> productsInCategoryList = ( List<ProductDto>)redisTemplate.opsForHash().get("Products","CATEGORY_"+category);
+        if(productsInCategoryList!=null) return productsInCategoryList;
+
         RestTemplate restTemplate = restTemplateBuilder.build();
         ProductDto[]productDtos =  restTemplate.getForObject(fakestoreapi+products_path+category_path+"/jewelery",ProductDto[].class);
         List<ProductDto> productDtoList = Arrays.asList(productDtos);
         if(productDtoList.size()==0) throw new NotFoundException("No Products in this category yet");
+        //Redis entry
+        redisTemplate.opsForHash().put("Products","CATEGORY_"+category,productDtoList);
         return productDtoList;
     }
 
@@ -105,13 +137,25 @@ public class FakeStoreService implements ProductsService{
         return deletedProduct;
     }
 
+    //Fakestore dont provide api for this
     @Override
     public List<ProductDto> getProductsInCategoriesLike(String searchstring) throws NotFoundException {
         return null;
     }
-
+    //Fakestore dont provide api for this
     @Override
     public Page<ProductDto> searchby(Integer page_no, Integer pagesize, String sortdirection, String sortby) {
         return null;
+    }
+
+    public ProductDto convertProductToProductDto(Product product){
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getProductId());
+        productDto.setCategory(product.getCategory().getCategory());
+        productDto.setTitle(product.getTitle());
+        productDto.setPrice(product.getPrice());
+        productDto.setImage(product.getImageurl());
+        productDto.setDescription(product.getDescription());
+        return productDto;
     }
 }

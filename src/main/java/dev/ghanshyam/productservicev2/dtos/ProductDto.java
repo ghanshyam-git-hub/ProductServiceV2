@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class ProductDto implements Serializable { // Serializable for Redis storage , so that redis can pack and unpack in this class Format
     private Long id;
     private String title;
     private Double price;
