@@ -53,6 +53,37 @@ public class ProductController {
         return responseEntity;
     }
 
+/*
+Both of the following methods will work the same way:
+
+Without value:
+
+java
+Copy code
+@GetMapping("/users")
+public ResponseEntity<List<UserDTO>> getUsers(
+        @RequestParam(required = false) String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String sort) {
+    // Logic
+}
+With value:
+
+java
+Copy code
+@GetMapping("/users")
+public ResponseEntity<List<UserDTO>> getUsers(
+        @RequestParam(value = "name", required = false) String userName,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size,
+        @RequestParam(value = "sort", required = false) String sort) {
+    // Logic
+}
+Conclusion
+Using value is optional. The choice depends on your coding style or if you want to clarify the expected query parameter name. If you're using method parameter names that are clear and match the expected query parameters, omitting value can keep the code concise.
+
+ */
     @GetMapping("/search")
     public ResponseEntity<Page<ProductDto>> searchby(
             @RequestParam(value = "page_no",defaultValue = "1") Integer page_no,
