@@ -1,8 +1,5 @@
 package dev.ghanshyam.productservicev2.dtos;
 
-import dev.ghanshyam.productservicev2.models.Category;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

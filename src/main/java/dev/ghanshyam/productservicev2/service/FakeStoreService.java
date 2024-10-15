@@ -6,21 +6,17 @@ import dev.ghanshyam.productservicev2.dtos.UpdateProductDto;
 import dev.ghanshyam.productservicev2.exception.AddException;
 import dev.ghanshyam.productservicev2.exception.DeleteException;
 import dev.ghanshyam.productservicev2.exception.NotFoundException;
-import dev.ghanshyam.productservicev2.models.Category;
 import dev.ghanshyam.productservicev2.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 
 @Service
 @Qualifier("FakeStoreProductService")

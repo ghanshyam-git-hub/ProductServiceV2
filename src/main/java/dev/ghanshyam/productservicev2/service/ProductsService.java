@@ -6,9 +6,7 @@ import dev.ghanshyam.productservicev2.dtos.UpdateProductDto;
 import dev.ghanshyam.productservicev2.exception.AddException;
 import dev.ghanshyam.productservicev2.exception.DeleteException;
 import dev.ghanshyam.productservicev2.exception.NotFoundException;
-import dev.ghanshyam.productservicev2.models.Product;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
