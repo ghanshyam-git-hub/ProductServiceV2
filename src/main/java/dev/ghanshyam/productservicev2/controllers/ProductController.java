@@ -58,8 +58,6 @@ Both of the following methods will work the same way:
 
 Without value:
 
-java
-Copy code
 @GetMapping("/users")
 public ResponseEntity<List<UserDTO>> getUsers(
         @RequestParam(required = false) String name,
@@ -70,8 +68,6 @@ public ResponseEntity<List<UserDTO>> getUsers(
 }
 With value:
 
-java
-Copy code
 @GetMapping("/users")
 public ResponseEntity<List<UserDTO>> getUsers(
         @RequestParam(value = "name", required = false) String userName,
@@ -82,6 +78,27 @@ public ResponseEntity<List<UserDTO>> getUsers(
 }
 Conclusion
 Using value is optional. The choice depends on your coding style or if you want to clarify the expected query parameter name. If you're using method parameter names that are clear and match the expected query parameters, omitting value can keep the code concise.
+
+Same for @PathVariable also
+
+Both of the following methods will work the same way:
+
+Without value:
+@GetMapping("/users/{id}")
+public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    // Logic
+}
+
+With value:
+@GetMapping("/users/{userId}")
+public ResponseEntity<UserDTO> getUserById(@PathVariable(value = "userId") Long id) {
+    // Logic
+}
+Conclusion
+Using value is optional for @PathVariable. Omitting it keeps your code concise, especially when the method parameter name clearly matches the expected path variable. However, using value can enhance clarity, especially in more complex scenarios or when the parameter names differ.
+
+
+
 
  */
     @GetMapping("/search")
